@@ -1,0 +1,59 @@
+{
+  "convs": {
+    "0": {
+      "thread_key": {
+        "thread_fbid": null,
+        "other_user_id": "1"
+      },
+      "name": null,
+      "messages_count": 363,
+      "image": null,
+      "updated_time_precise": "1551307726887",
+      "thread_type": "ONE_TO_ONE",
+      "all_participants": {
+        "edges": [
+          {
+            "admin_type": null,
+            "node": {
+              "messaging_actor": {
+                "id": "0",
+                "__typename": "User"
+              }
+            }
+          },
+          {
+            "admin_type": null,
+            "node": {
+              "messaging_actor": {
+                "id": "1",
+                "__typename": "User"
+              }
+            }
+          }
+        ]
+      },
+      "messages": {
+        "page_info": {
+          "has_previous_page": true
+        },
+        "nodes": [
+          {
+            "message_sender": {
+              "id": "1"
+            },
+            "timestamp_precise": "1549324578195",
+            "tags_list": [
+              "sent",
+              "inbox",
+              "source:chat:orca",
+              "app_id:256002347743983"
+            ],
+            "message": {
+              "text": "Lorem Ipsum"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
