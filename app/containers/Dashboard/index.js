@@ -60,6 +60,7 @@ export class Dashboard extends React.PureComponent {
           conv={
             this.props.dashboard.conversations[this.props.dashboard.activeConv]
           }
+          filter={this.props.dashboard.usersFilter}
         />
       ),
     };

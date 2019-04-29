@@ -69,6 +69,12 @@ function dashboardReducer(state = initialState, action) {
               words: {},
               messages: {},
               messagesCounter: 0,
+              textCounter: 0,
+              filesCounter: 0,
+              linksCounter: 0,
+              gifsCounter: 0,
+              picsCounter: 0,
+              videosCounter: 0,
               wordsCounter: 0,
               charCounter: 0,
             };
@@ -121,7 +127,35 @@ function dashboardReducer(state = initialState, action) {
           }
           newConvData.data[m.message_sender.id].messages[m.timestamp_precise] =
             m.message.text;
-          newConvData.data[m.message_sender.id].messagesCounter += 1;
+          if (m.blob_attachments.length >= 1) {
+            m.blob_attachments.forEach(b => {
+              // eslint-disable-next-line
+              switch (b.__typename) {
+                case 'MessageFile':
+                  newConvData.data[m.message_sender.id].filesCounter += 1;
+                  break;
+                case 'MessageImage':
+                  newConvData.data[m.message_sender.id].picsCounter += 1;
+                  break;
+                case 'MessageVideo':
+                  newConvData.data[m.message_sender.id].videosCounter += 1;
+                  break;
+                case 'MessageAnimatedImage':
+                  newConvData.data[m.message_sender.id].gifsCounter += 1;
+                  break;
+                default:
+                  newConvData.data[m.message_sender.id].textCounter += 1;
+                  break;
+              }
+              newConvData.data[m.message_sender.id].messagesCounter += 1;
+            });
+          } else if (m.extensible_attachment) {
+            newConvData.data[m.message_sender.id].linksCounter += 1;
+            newConvData.data[m.message_sender.id].messagesCounter += 1;
+          } else {
+            newConvData.data[m.message_sender.id].textCounter += 1;
+            newConvData.data[m.message_sender.id].messagesCounter += 1;
+          }
           newConvData.data[m.message_sender.id].charCounter +=
             m.message.text.length;
           tmp = m.message.text.replace(
