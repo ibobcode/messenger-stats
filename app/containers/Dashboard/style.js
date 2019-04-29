@@ -58,8 +58,14 @@ const StyledWrapper = styled.div`
   .dashboard {
     height: 100%;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
     .graph-container {
-      height: calc(100% - 30px);
+      flex-grow: 1;
+      width: 100%;
+      background-color: white;
+      box-shadow: 0 0 6px #0000000d;
+      border-radius: 10px;
     }
   }
 `;

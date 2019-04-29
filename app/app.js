@@ -16,8 +16,6 @@ import { ConnectedRouter } from 'connected-react-router/immutable';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
 
-import dotenv from 'dotenv';
-
 // Import root app
 import App from 'containers/App';
 
@@ -33,8 +31,6 @@ import configureStore from './configureStore';
 
 // Import i18n messages
 import { translationMessages } from './i18n';
-
-dotenv.config();
 
 // Create redux store with history
 const initialState = {};

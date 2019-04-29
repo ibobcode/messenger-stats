@@ -13,11 +13,7 @@ function checkPageLoad(sendResponse) {
   );
 }
 
-function req(data, sendResponse) {
-  const convId = document
-    .getElementsByClassName('_1ht2')[0]
-    .firstChild.id.split(':')[1];
-  const body = data.replace('CURRENT_CONV_ID', convId);
+function req(body, sendResponse) {
   fetch('https://www.messenger.com/api/graphqlbatch/', {
     credentials: 'include',
     method: 'POST',
@@ -49,6 +45,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     req(request.payload, sendResponse);
   } else if (request.type === 'WAIT_PAGE_LOAD') {
     checkPageLoad(sendResponse);
+  } else if (request.type === 'GET_CURRENT_CONV_ID') {
+    const a = document
+      .getElementsByClassName('_1ht2')[0]
+      .firstChild.id.split(':')[1];
+    sendResponse(a);
   }
   return true;
 });

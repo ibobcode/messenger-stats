@@ -37,30 +37,35 @@ async function sendChomeMessage(action) {
   });
 }
 
-export async function loadSelectedConv(uid, dtsg, nMessages, time) {
+export async function loadMessagesFromConv(uid, dtsg, id, nMessages, time) {
   const ret = await sendChomeMessage({
     type: 'FETCH',
     payload: `\
           batch_name=MessengerGraphQLThreadFetcher&\
           __user=${uid}&\
           fb_dtsg=${dtsg}&\
-          queries=%7B%22o0%22%3A%7B%22doc_id%22%3A%221777357372370450%22%2C%22query_params%22%3A%7B%22id%22%3A%22CURRENT_CONV_ID%22%2C%22message_limit%22%3A${nMessages}%2C%22load_messages%22%3Atrue%2C%22load_read_receipts%22%3Atrue%2C%22load_delivery_receipts%22%3Atrue%2C%22before%22%3A${time}%7D%7D%7D\
+          queries=%7B%22o0%22%3A%7B%22doc_id%22%3A%221777357372370450%22%2C%22query_params%22%3A%7B%22id%22%3A%22${id}%22%2C%22message_limit%22%3A${nMessages}%2C%22load_messages%22%3Atrue%2C%22load_read_receipts%22%3Atrue%2C%22load_delivery_receipts%22%3Atrue%2C%22before%22%3A${time}%7D%7D%7D\
         `,
   });
   return ret.o0.data.message_thread;
 }
 
-// export async function loadConvs(uid, dtsg, nConvs, time) {
-//   console.log(uid, dtsg, nConvs, time);
-//   const ret = await sendChomeMessage({
-//     type: 'FETCH',
-//     payload: `\
-//       batch_name=MessengerGraphQLThreadlistFetcher&\
-//       __user=${uid}&\
-//       fb_dtsg=${dtsg}&\
-//       queries=%7B%22o0%22%3A%7B%22doc_id%22%3A%222165227886848586%22%2C%22query_params%22%3A%7B%22limit%22%3A${nConvs}%2C%22before%22%3A${time}%2C%22tags%22%3A[%22INBOX%22]%7D%7D%7D\
-//     `,
-//   });
-//   console.log(ret);
-//   return ret.o0.data.viewer.message_threads.nodes;
-// }
+export async function loadConvsInfos(uid, dtsg, nConvs = 100) {
+  const ret = await sendChomeMessage({
+    type: 'FETCH',
+    payload: `\
+          batch_name=MessengerGraphQLThreadFetcher&\
+          __user=${uid}&\
+          fb_dtsg=${dtsg}&\
+          queries=%7B%22o0%22%3A%7B%22doc_id%22%3A%221475048592613093%22%2C%22query_params%22%3A%7B%22before%22%3Anull%2C%22includeMessages%22%3Afalse%2C%22limit%22%3A${nConvs}%2C%22includeDeliveryReceipts%22%3Afalse%2C%22includeSeqID%22%3Afalse%7D%7D%7D\
+        `,
+  });
+  return ret.o0.data.viewer.message_threads.nodes;
+}
+
+export async function getConvId() {
+  const ret = await sendChomeMessage({
+    type: 'GET_CURRENT_CONV_ID',
+  });
+  return ret;
+}

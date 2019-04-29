@@ -1,18 +1,20 @@
-import { call, take, put, all, fork, select } from 'redux-saga/effects';
-import { loadFbDtsg, loadSelectedConv } from 'utils/requests';
-import { selectConversations } from './selectors';
-// import dummyData from 'utils/dummyData.json';
+import { call, take, put, all, fork } from 'redux-saga/effects';
+import {
+  loadFbDtsg,
+  loadMessagesFromConv,
+  loadConvsInfos,
+  getConvId,
+} from 'utils/requests';
+import dummyConv from 'utils/dummyConv.json';
+import dummyDetails from 'utils/dummyDetails.json';
 import {
   INIT_APP,
   STATUS_UPDATE,
-  CONVS_INIT,
-  CONV_CREATE,
+  CONVS_RETREIVE,
+  CONVS_META,
   CONV_SET,
-  CONV_UPDATE,
+  PUSH_DATA,
 } from './constants';
-
-const DTSG = process.env.DTSG || null;
-const UID = process.env.UID || null;
 
 const pause = t => new Promise(resolve => setTimeout(() => resolve(true), t));
 
@@ -23,28 +25,24 @@ async function sendChomeMessage(action) {
   });
 }
 
-function getConvId(conversation) {
-  const convId =
-    conversation.thread_type === 'ONE_TO_ONE'
-      ? conversation.thread_key.other_user_id
-      : conversation.thread_key.thread_fbid;
-  return typeof convId === 'number' ? convId.toString() : convId;
-}
-
 function* initApp() {
   try {
     // Used to trigger animation when landing on page
     yield pause(200);
     const isOnMessenger = yield sendChomeMessage({ type: 'IS_ON_MESSENGER' });
     if (!isOnMessenger) {
-      yield put({ type: STATUS_UPDATE, payload: 0 });
+      yield put({
+        type: STATUS_UPDATE,
+        payload: 0,
+        meta: 'You have to be on a messemger tab for the plugin to work',
+      });
       throw new Error('Not connected to messenger.');
     }
     yield put({ type: STATUS_UPDATE, payload: 1 });
     // Load dummy data
     let userInfos = {
-      dtsg: DTSG,
-      uid: UID,
+      dtsg: null,
+      uid: null,
     };
     // TODO : Fix memory leak when loading data from local storage
     // yield sendChomeMessage({
@@ -53,7 +51,16 @@ function* initApp() {
     // });
 
     // FIRST STEP : Getting the DTGS and UID variables from facebook
-    userInfos = yield loadFbDtsg();
+    try {
+      userInfos = yield loadFbDtsg();
+    } catch (e) {
+      yield put({
+        type: STATUS_UPDATE,
+        payload: 0,
+        meta: 'You have to be connected to facebook on this navigator',
+      });
+      throw new Error('Not connected to messenger.');
+    }
     yield pause(1000);
     yield put({ type: STATUS_UPDATE, payload: 2 });
 
@@ -62,48 +69,44 @@ function* initApp() {
       type: 'LS_GET',
       payload: 'conversations',
     });
-    if (Object.keys(storedData.conversations).length > 0) {
-      yield put({ type: CONVS_INIT, payload: storedData.conversations });
+    if (
+      storedData.conversations &&
+      Object.keys(storedData.conversations).length > 0
+    ) {
+      yield put({ type: CONVS_RETREIVE, payload: storedData.conversations });
     }
     yield pause(1000);
     yield put({ type: STATUS_UPDATE, payload: 3 });
 
     // THIRD STEP : Getting infos about the curent conversation and updating state
-    const stateConvs = yield select(selectConversations);
-    let conversation = yield loadSelectedConv(
+    const convId = yield getConvId();
+    const conversationsInfos = yield loadConvsInfos(
       userInfos.uid,
       userInfos.dtsg,
-      100,
-      Date.now(),
     );
-    let convId = getConvId(conversation);
-    if (stateConvs[convId]) {
-      yield put({ type: CONV_SET, payload: convId });
-    } else {
-      yield put({ type: CONV_CREATE, payload: conversation, meta: convId });
-      yield put({ type: CONV_SET, payload: convId });
-      // const convsToStore = yield select(selectConversations);
-      // yield sendChomeMessage({
-      //   type: 'LS_SET',
-      //   payload: { conversations: convsToStore },
-      // });
-    }
+    yield put({ type: CONVS_META, payload: conversationsInfos, meta: convId });
+    yield put({ type: CONV_SET, payload: convId });
     yield pause(1000);
     yield put({ type: STATUS_UPDATE, payload: 4 });
     yield pause(1000);
     yield put({ type: STATUS_UPDATE, payload: 5 });
-    while (conversation.messages.page_info.has_previous_page) {
-      conversation = yield loadSelectedConv(
+    let conversation = null;
+    while (
+      conversation === null ||
+      conversation.messages.page_info.has_previous_page
+    ) {
+      conversation = yield loadMessagesFromConv(
         userInfos.uid,
         userInfos.dtsg,
+        convId,
         1000,
-        Number(conversation.messages.nodes[0].timestamp_precise),
+        conversation
+          ? Number(conversation.messages.nodes[0].timestamp_precise)
+          : Date.now(),
       );
-      convId = getConvId(conversation);
       yield put({
-        type: CONV_UPDATE,
-        payload: conversation.messages,
-        meta: convId,
+        type: PUSH_DATA,
+        payload: conversation,
       });
       // const convsToStore = yield select(selectConversations);
       // yield sendChomeMessage({
@@ -116,6 +119,23 @@ function* initApp() {
   }
 }
 
+function* mockApp() {
+  yield put({
+    type: CONVS_META,
+    payload: dummyDetails,
+    meta: dummyConv.thread_key.thread_fbid,
+  });
+  yield put({
+    type: CONV_SET,
+    payload: dummyConv.thread_key.thread_fbid,
+  });
+  yield put({
+    type: PUSH_DATA,
+    payload: dummyConv,
+  });
+  yield put({ type: STATUS_UPDATE, payload: 5 });
+}
+
 /* **************************************************************************** */
 /* ****************************** WATCHERS ************************************ */
 /* **************************************************************************** */
@@ -123,7 +143,11 @@ function* initApp() {
 function* watchInitApp() {
   while (true) {
     const action = yield take(INIT_APP);
-    yield call(initApp, action);
+    if (process.env.NODE_ENV === 'development') {
+      yield call(mockApp, action);
+    } else {
+      yield call(initApp, action);
+    }
   }
 }
 

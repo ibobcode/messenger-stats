@@ -24,7 +24,7 @@ import StyledWrapper from './style';
 import messages from './messages';
 import { makeSelectDashboard } from './selectors';
 import reducer from './reducer';
-import { init } from './actions';
+import { init, changeUsersFilter } from './actions';
 import saga from './saga';
 
 /* eslint-disable react/prefer-stateless-function */
@@ -44,6 +44,7 @@ export class Dashboard extends React.PureComponent {
           conv={
             this.props.dashboard.conversations[this.props.dashboard.activeConv]
           }
+          filter={this.props.dashboard.usersFilter}
         />
       ),
       average: (
@@ -51,6 +52,7 @@ export class Dashboard extends React.PureComponent {
           conv={
             this.props.dashboard.conversations[this.props.dashboard.activeConv]
           }
+          filter={this.props.dashboard.usersFilter}
         />
       ),
       ranking: (
@@ -123,9 +125,7 @@ export class Dashboard extends React.PureComponent {
               </Step.Group>
             ) : (
               <div className="not-on-messenger">
-                <h1>
-                  YOU MUST BE ON THE MESSENGER WEBPAGE TO USE MESSENGER STATS
-                </h1>
+                <h1>{`ERROR: ${this.props.dashboard.error}`}</h1>
               </div>
             )}
             <Eye color="#FFFFFF" size={50} />
@@ -136,7 +136,14 @@ export class Dashboard extends React.PureComponent {
             <Menu
               titles={Object.keys(graphSelector)}
               selectedGraph={this.state.selectedGraph}
+              usersFilter={this.props.dashboard.usersFilter}
               onChangeGraph={selectedGraph => this.setState({ selectedGraph })}
+              onChangeUsersFilter={this.props.changeUsersFilter}
+              conv={
+                this.props.dashboard.conversations[
+                  this.props.dashboard.activeConv
+                ]
+              }
             />
             <div className="graph-container">
               {Object.values(graphSelector)[this.state.selectedGraph]}
@@ -163,6 +170,7 @@ const mapStateToProps = createStructuredSelector({
 function mapDispatchToProps(dispatch) {
   return {
     init: bindActionCreators(init, dispatch),
+    changeUsersFilter: bindActionCreators(changeUsersFilter, dispatch),
   };
 }
 

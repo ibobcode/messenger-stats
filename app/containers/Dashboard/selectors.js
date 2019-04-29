@@ -12,13 +12,13 @@ const selectDashboardDomain = state => state.get('dashboard', initialState);
  */
 
 const selectConversations = state =>
-  state.getIn(['dashboard', 'conversations'], initialState).toJS();
+  state.getIn(['dashboard', 'conversations'], initialState);
 
 /**
  * Default selector used by Dashboard
  */
 
 const makeSelectDashboard = () =>
-  createSelector(selectDashboardDomain, dashboard => dashboard.toJS());
+  createSelector(selectDashboardDomain, dashboard => dashboard);
 
 export { makeSelectDashboard, selectConversations };

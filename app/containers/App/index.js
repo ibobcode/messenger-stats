@@ -11,7 +11,6 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Dashboard from 'containers/Dashboard/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
 import GlobalStyle from '../../global-styles';
 
@@ -22,7 +21,6 @@ export default function App() {
     <div className="app-container">
       <Switch>
         <Route exact path={`${PREFIX}/`} component={Dashboard} />
-        <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
     </div>

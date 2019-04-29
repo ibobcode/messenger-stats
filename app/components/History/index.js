@@ -1,22 +1,29 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { ResponsiveCalendar } from '@nivo/calendar';
 import StyledWrapper from './style';
 
-function History(props) {
+function History({ conv, filter }) {
   const data = {};
-  props.conv.messages.nodes.forEach(m => {
-    const d = new Date(Number(m.timestamp_precise));
-    const label = `${d.getFullYear()}-${
-      d.getMonth() + 1 < 10 ? '0' : ''
-    }${d.getMonth() + 1}-${d.getDate() < 10 ? '0' : ''}${d.getDate()}`;
-    data[label] = {
-      day: label,
-      value: data[label] ? data[label].value + 1 : 1,
-    };
+  Object.values(filter).forEach(f => {
+    if (f.status) {
+      Object.keys(conv.data[f.id].messages).forEach(timestamp => {
+        const d = new Date(Number(timestamp));
+        const label = `${d.getFullYear()}-${
+          d.getMonth() + 1 < 10 ? '0' : ''
+        }${d.getMonth() + 1}-${d.getDate() < 10 ? '0' : ''}${d.getDate()}`;
+        data[label] = {
+          day: label,
+          value: data[label] ? data[label].value + 1 : 1,
+        };
+      });
+    }
   });
+  if (!Object.values(data)[0]) {
+    return '';
+  }
   return (
-    <StyledWrapper className="history" {...props}>
+    <StyledWrapper className="history">
       <ResponsiveCalendar
         data={Object.values(data)}
         from={Object.values(data)[0].day}
@@ -58,6 +65,9 @@ function History(props) {
   );
 }
 
-History.propTypes = {};
+History.propTypes = {
+  conv: PropTypes.object,
+  filter: PropTypes.object,
+};
 
 export default History;

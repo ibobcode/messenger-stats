@@ -7,7 +7,7 @@ const prettierOptions = JSON.parse(
 
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['airbnb', 'prettier', 'prettier/react'],
+  extends: ['airbnb', 'prettier', 'prettier/react', 'eslint-config-prettier'],
   plugins: ['prettier', 'redux-saga', 'react', 'jsx-a11y'],
   env: {
     jest: true,
@@ -35,13 +35,6 @@ module.exports = {
     'import/no-unresolved': 2,
     'import/no-webpack-loader-syntax': 0,
     'import/prefer-default-export': 0,
-    indent: [
-      2,
-      2,
-      {
-        SwitchCase: 1,
-      },
-    ],
     'jsx-a11y/aria-props': 2,
     'jsx-a11y/heading-has-content': 0,
     'jsx-a11y/label-has-associated-control': [
@@ -55,6 +48,9 @@ module.exports = {
     ],
     'jsx-a11y/label-has-for': 0,
     'jsx-a11y/mouse-events-have-key-events': 2,
+    'jsx-a11y/click-events-have-key-events': 0,
+    'jsx-a11y/no-static-element-interactions': 0,
+    'jsx-a11y/no-noninteractive-element-interactions': 0,
     'jsx-a11y/role-has-required-aria-props': 2,
     'jsx-a11y/role-supports-aria-props': 2,
     'max-len': 0,
@@ -78,6 +74,7 @@ module.exports = {
     'redux-saga/no-yield-in-race': 2,
     'redux-saga/yield-effects': 2,
     'require-yield': 0,
+    'no-case-declarations': 0,
   },
   settings: {
     'import/resolver': {
