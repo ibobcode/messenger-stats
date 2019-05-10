@@ -15,6 +15,7 @@ export const mask = keyframes`
 
 const StyledWrapper = styled.div`
   padding-bottom: 10px;
+  position: relative;
   h1 {
     font-size: 2rem;
     color: #ff703a;

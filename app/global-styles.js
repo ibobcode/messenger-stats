@@ -5,14 +5,11 @@ const GlobalStyle = createGlobalStyle`
   body {
     width: 800px;
     height: 550px;
+    font-family: 'Rubik', sans-serif;
+    position: relative;
   }
-
-  body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-
-  body.fontLoaded {
-    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  h1, h2, h3, h4, h5, span, p {
+    font-family: 'Rubik', sans-serif;
   }
 
   #app {

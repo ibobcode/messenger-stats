@@ -14,12 +14,13 @@ import { compose, bindActionCreators } from 'redux';
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
 import { CSSTransition } from 'react-transition-group';
-import { Icon, Step } from 'semantic-ui-react';
+import { Icon, Step, Button } from 'semantic-ui-react';
 import { Eye } from 'react-preloading-component';
 import History from 'components/History';
 import Average from 'components/Average';
 import Ranking from 'components/Ranking';
 import Menu from 'components/Menu';
+import warn from 'images/warn.png';
 import StyledWrapper from './style';
 import messages from './messages';
 import { makeSelectDashboard } from './selectors';
@@ -75,8 +76,9 @@ export class Dashboard extends React.PureComponent {
           unmountOnExit
           // onExited={}
         >
-          <div className="loading-screen">
-            {this.props.dashboard.status > 0 ? (
+          {this.props.dashboard.status > 0 ? (
+            <div className="loading-screen">
+              <h1>MESSENGER STATS</h1>
               <Step.Group>
                 <Step
                   completed={this.props.dashboard.status > 1}
@@ -124,13 +126,54 @@ export class Dashboard extends React.PureComponent {
                   </Step.Content>
                 </Step>
               </Step.Group>
-            ) : (
-              <div className="not-on-messenger">
-                <h1>{`ERROR: ${this.props.dashboard.error}`}</h1>
-              </div>
-            )}
-            <Eye color="#FFFFFF" size={50} />
-          </div>
+              <Eye color="#FFFFFF" size={50} />
+              <span className="footer">BY DYLAN HEIRSTRAETEN</span>
+            </div>
+          ) : (
+            <div className="error">
+              <img alt="WARNING" src={warn} />
+              <h2>{this.props.dashboard.error.message}</h2>
+              <a
+                className="action"
+                target={this.props.dashboard.error.target}
+                href={this.props.dashboard.error.link}
+              >
+                {this.props.dashboard.error.action}
+              </a>
+              <Button
+                content="By clicking here"
+                icon="mail"
+                label={{
+                  as: 'a',
+                  basic: true,
+                  pointing: 'right',
+                  content:
+                    'If the problem persists, do not hesitate to contact me',
+                }}
+                labelPosition="left"
+                onClick={() =>
+                  window.open('mailto:dylan.heirstraeten@epitech.eu', '_blank')
+                }
+              />
+              <Button
+                content="By clicking here"
+                icon="github"
+                label={{
+                  as: 'a',
+                  basic: true,
+                  pointing: 'right',
+                  content: 'Or directly open an issue on the github repository',
+                }}
+                labelPosition="left"
+                onClick={() =>
+                  window.open(
+                    'https://github.com/ibobcode/messenger-stats/issues',
+                    '_blank',
+                  )
+                }
+              />
+            </div>
+          )}
         </CSSTransition>
         {this.props.dashboard.status > 3 ? (
           <div className="dashboard">

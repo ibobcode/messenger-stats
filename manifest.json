@@ -8,6 +8,8 @@
     "identity",
     "downloads",
     "storage",
+    "webRequest",
+    "webRequestBlocking",
     "unlimitedStorage",
     "*://*.facebook.com/*",
     "*://*.messenger.com/*"

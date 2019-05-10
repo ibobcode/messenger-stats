@@ -12,7 +12,7 @@ export const initialState = {
   conversations: {},
   activeConv: null,
   usersFilter: {},
-  error: '',
+  error: {},
 };
 
 function dashboardReducer(state = initialState, action) {
@@ -55,14 +55,16 @@ function dashboardReducer(state = initialState, action) {
         if (!newState.conversations[convId]) {
           newState.conversations[convId] = { name: conv.name, data: {} };
           conv.all_participants.nodes.forEach(u => {
+            let nickname =
+              conv.customization_info &&
+              conv.customization_info.participant_customizations.length > 0
+                ? conv.customization_info.participant_customizations.find(
+                    un => un.participant_id === u.messaging_actor.id,
+                  )
+                : undefined;
+            nickname = nickname ? nickname.nickname : '';
             newState.conversations[convId].data[u.messaging_actor.id] = {
-              nickname:
-                conv.customization_info &&
-                conv.customization_info.participant_customizations.length > 0
-                  ? conv.customization_info.participant_customizations.find(
-                      un => un.participant_id === u.messaging_actor.id,
-                    ).nickname
-                  : '',
+              nickname,
               name: u.messaging_actor.name,
               id: u.messaging_actor.id,
               pic: u.messaging_actor.big_image_src.uri,

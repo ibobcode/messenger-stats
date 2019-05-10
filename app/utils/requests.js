@@ -27,7 +27,7 @@ export function loadFbDtsg() {
     });
 }
 
-async function sendChomeMessage(action) {
+async function sendChomeMessageToTab(action) {
   return new Promise(resolve => {
     // eslint-disable-next-line no-undef
     chrome.tabs.query({ active: true, currentWindow: true }, tabs =>
@@ -37,8 +37,15 @@ async function sendChomeMessage(action) {
   });
 }
 
+async function sendChomeMessageToBackground(action) {
+  return new Promise(resolve => {
+    // eslint-disable-next-line no-undef
+    chrome.runtime.sendMessage(action, response => resolve(response));
+  });
+}
+
 export async function loadMessagesFromConv(uid, dtsg, id, nMessages, time) {
-  const ret = await sendChomeMessage({
+  const ret = await sendChomeMessageToBackground({
     type: 'FETCH',
     payload: `\
           batch_name=MessengerGraphQLThreadFetcher&\
@@ -51,7 +58,7 @@ export async function loadMessagesFromConv(uid, dtsg, id, nMessages, time) {
 }
 
 export async function loadConvsInfos(uid, dtsg, nConvs = 100) {
-  const ret = await sendChomeMessage({
+  const ret = await sendChomeMessageToBackground({
     type: 'FETCH',
     payload: `\
           batch_name=MessengerGraphQLThreadFetcher&\
@@ -64,7 +71,7 @@ export async function loadConvsInfos(uid, dtsg, nConvs = 100) {
 }
 
 export async function getConvId() {
-  const ret = await sendChomeMessage({
+  const ret = await sendChomeMessageToTab({
     type: 'GET_CURRENT_CONV_ID',
   });
   return ret;

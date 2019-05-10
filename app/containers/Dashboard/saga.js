@@ -5,8 +5,8 @@ import {
   loadConvsInfos,
   getConvId,
 } from 'utils/requests';
-import dummyConv from 'utils/dummyConv.json';
-import dummyDetails from 'utils/dummyDetails.json';
+// import dummyConv from 'utils/dummyConv.json';
+// import dummyDetails from 'utils/dummyDetails.json';
 import {
   INIT_APP,
   STATUS_UPDATE,
@@ -28,15 +28,18 @@ async function sendChomeMessage(action) {
 function* initApp() {
   try {
     // Used to trigger animation when landing on page
-    yield pause(200);
     const isOnMessenger = yield sendChomeMessage({ type: 'IS_ON_MESSENGER' });
     if (!isOnMessenger) {
       yield put({
         type: STATUS_UPDATE,
         payload: 0,
-        meta: 'You have to be on a messemger tab for the plugin to work',
+        meta: {
+          message: 'You have to be on a messenger tab for the plugin to work',
+          link: 'https://www.messenger.com',
+          target: '_blank',
+          action: 'Click here to open a messenger tab',
+        },
       });
-      throw new Error('Not connected to messenger.');
     }
     yield put({ type: STATUS_UPDATE, payload: 1 });
     // Load dummy data
@@ -57,9 +60,14 @@ function* initApp() {
       yield put({
         type: STATUS_UPDATE,
         payload: 0,
-        meta: 'You have to be connected to facebook on this navigator',
+        meta: {
+          message:
+            'You mush be already logged once to facebook on this computer',
+          link: 'https://www.facebook.com',
+          target: '_blank',
+          action: 'Click here to open the facebook login page',
+        },
       });
-      throw new Error('Not connected to messenger.');
     }
     yield pause(1000);
     yield put({ type: STATUS_UPDATE, payload: 2 });
@@ -115,25 +123,45 @@ function* initApp() {
       // });
     }
   } catch (error) {
-    console.log(error);
+    yield put({
+      type: STATUS_UPDATE,
+      payload: 0,
+      meta: {
+        message: 'An unknown error occured, try to refresh your messenger tab',
+        link: '',
+        target: '',
+        action: '',
+      },
+    });
   }
 }
 
 function* mockApp() {
+  yield pause(200);
   yield put({
-    type: CONVS_META,
-    payload: dummyDetails,
-    meta: dummyConv.thread_key.thread_fbid,
+    type: STATUS_UPDATE,
+    payload: 0,
+    meta: {
+      message: 'An unknown error occured',
+      link: '.',
+      target: '',
+      action: 'Click here reload messenger',
+    },
   });
-  yield put({
-    type: CONV_SET,
-    payload: dummyConv.thread_key.thread_fbid,
-  });
-  yield put({
-    type: PUSH_DATA,
-    payload: dummyConv,
-  });
-  yield put({ type: STATUS_UPDATE, payload: 5 });
+  // yield put({
+  //   type: CONVS_META,
+  //   payload: dummyDetails,
+  //   meta: dummyConv.thread_key.thread_fbid,
+  // });
+  // yield put({
+  //   type: CONV_SET,
+  //   payload: dummyConv.thread_key.thread_fbid,
+  // });
+  // yield put({
+  //   type: PUSH_DATA,
+  //   payload: dummyConv,
+  // });
+  // yield put({ type: STATUS_UPDATE, payload: 5 });
 }
 
 /* **************************************************************************** */
