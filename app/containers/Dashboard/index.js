@@ -196,6 +196,25 @@ export class Dashboard extends React.PureComponent {
         ) : (
           ''
         )}
+        <div className="contact">
+          <Icon
+            name="github"
+            color="grey"
+            onClick={() =>
+              window.open(
+                'https://github.com/ibobcode/messenger-stats',
+                '_blank',
+              )
+            }
+          />
+          <Icon
+            name="mail"
+            color="grey"
+            onClick={() =>
+              window.open('mailto:dylan.heirstraeten@epitech.eu', '_blank')
+            }
+          />
+        </div>
       </StyledWrapper>
     );
   }

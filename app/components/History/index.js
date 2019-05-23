@@ -23,15 +23,15 @@ function History({ conv, filter }) {
     return '';
   }
   const min = Object.values(data).reduce(
-    (m, val) => (new Date(m).getTime > new Date(val).getTime ? val : m),
-    0,
+    (m, val) =>
+      new Date(m.day).getTime() < new Date(val.day).getTime() ? m : val,
   );
-  console.log(min);
+  console.log(min.day);
   return (
     <StyledWrapper className="history">
       <ResponsiveCalendar
         data={Object.values(data)}
-        from={min}
+        from={min.day}
         to="2019-03-01"
         emptyColor="#eeeeee"
         colors={[

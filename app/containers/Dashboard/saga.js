@@ -5,8 +5,8 @@ import {
   loadConvsInfos,
   getConvId,
 } from 'utils/requests';
-// import dummyConv from 'utils/dummyConv.json';
-// import dummyDetails from 'utils/dummyDetails.json';
+import dummyConv from 'utils/dummyConv.json';
+import dummyDetails from 'utils/dummyDetails.json';
 import {
   INIT_APP,
   STATUS_UPDATE,
@@ -40,6 +40,7 @@ function* initApp() {
           action: 'Click here to open a messenger tab',
         },
       });
+      return null;
     }
     yield put({ type: STATUS_UPDATE, payload: 1 });
     // Load dummy data
@@ -68,6 +69,7 @@ function* initApp() {
           action: 'Click here to open the facebook login page',
         },
       });
+      return null;
     }
     yield pause(1000);
     yield put({ type: STATUS_UPDATE, payload: 2 });
@@ -134,34 +136,35 @@ function* initApp() {
       },
     });
   }
+  return null;
 }
 
 function* mockApp() {
-  yield pause(200);
+  // yield pause(200);
+  // yield put({
+  //   type: STATUS_UPDATE,
+  //   payload: 0,
+  //   meta: {
+  //     message: 'An unknown error occured',
+  //     link: '.',
+  //     target: '',
+  //     action: 'Click here to reload messenger',
+  //   },
+  // });
   yield put({
-    type: STATUS_UPDATE,
-    payload: 0,
-    meta: {
-      message: 'An unknown error occured',
-      link: '.',
-      target: '',
-      action: 'Click here reload messenger',
-    },
+    type: CONVS_META,
+    payload: dummyDetails,
+    meta: dummyConv.thread_key.thread_fbid,
   });
-  // yield put({
-  //   type: CONVS_META,
-  //   payload: dummyDetails,
-  //   meta: dummyConv.thread_key.thread_fbid,
-  // });
-  // yield put({
-  //   type: CONV_SET,
-  //   payload: dummyConv.thread_key.thread_fbid,
-  // });
-  // yield put({
-  //   type: PUSH_DATA,
-  //   payload: dummyConv,
-  // });
-  // yield put({ type: STATUS_UPDATE, payload: 5 });
+  yield put({
+    type: CONV_SET,
+    payload: dummyConv.thread_key.thread_fbid,
+  });
+  yield put({
+    type: PUSH_DATA,
+    payload: dummyConv,
+  });
+  yield put({ type: STATUS_UPDATE, payload: 5 });
 }
 
 /* **************************************************************************** */

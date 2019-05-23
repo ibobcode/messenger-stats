@@ -96,6 +96,25 @@ const StyledWrapper = styled.div`
       border-radius: 10px;
     }
   }
+  .contact {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    .icon {
+      cursor: pointer;
+      transition: 0.3s;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+    &::after {
+      content: 'BETA';
+      color: #ff703a;
+      position: absolute;
+      right: 4px;
+      bottom: -20px;
+    }
+  }
 `;
 
 export default StyledWrapper;
