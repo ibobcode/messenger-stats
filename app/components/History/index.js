@@ -26,7 +26,6 @@ function History({ conv, filter }) {
     (m, val) =>
       new Date(m.day).getTime() < new Date(val.day).getTime() ? m : val,
   );
-  console.log(min.day);
   return (
     <StyledWrapper className="history">
       <ResponsiveCalendar

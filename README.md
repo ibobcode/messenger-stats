@@ -1,4 +1,4 @@
-# ![MS](https://raw.githubusercontent.com/ibobcode/messenger-stats/master/icons/icon-64.png) Welcome to MessengerStats! ![MS](https://raw.githubusercontent.com/ibobcode/messenger-stats/master/icons/icon-64.png)
+# ![MS](https://raw.githubusercontent.com/ibobcode/messenger-stats/master/icons/icon-32.png) Welcome to MessengerStats! ![MS](https://raw.githubusercontent.com/ibobcode/messenger-stats/master/icons/icon-32.png)
 
 [![DOWNLOAD](https://img.shields.io/badge/DOWNLOAD-MESSENGER--STATS-green.svg?colorA=555555&colorB=ff703a&logo=google%20chrome&logoColor=DDDDDD&style=for-the-badge)](https://chrome.google.com/webstore/detail/messenger-stats/obflhcbomdnpindeaeknghbmkccbadgi)
 
@@ -17,6 +17,7 @@ For now, it is still a **BETA!**, not all bugs have been found (please report an
 
 🔨 **Affinity** : Displays the affinity between persons in a group based on reactions, replies, and tagging.
 🔨 **Words Stats** : Displays the number of words/characters typed with their frequency.
+🔨 **Locally Saved Data** : Use of local storage as a static copy of state to avoid loading old data at each use.
 
 If you have any ideas of features, do not hesitate to open an issue tagged as Feature Request !
 

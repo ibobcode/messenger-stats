@@ -79,7 +79,6 @@ function* initApp() {
       type: 'LS_GET',
       payload: 'conversations',
     });
-    console.log('storedData', storedData);
     if (
       storedData.conversations &&
       Object.keys(storedData.conversations).length > 0
@@ -91,18 +90,14 @@ function* initApp() {
 
     // THIRD STEP : Getting infos about the curent conversation and updating state
     const convId = yield getConvId();
-    console.log('convId', convId);
     const conversationsInfos = yield loadConvsInfos(
       userInfos.uid,
       userInfos.dtsg,
     );
-    console.log('conversationsInfos', conversationsInfos);
     yield put({ type: CONVS_META, payload: conversationsInfos, meta: convId });
     yield put({ type: CONV_SET, payload: convId });
-    yield pause(1000);
     yield put({ type: STATUS_UPDATE, payload: 4 });
-    yield pause(1000);
-    yield put({ type: STATUS_UPDATE, payload: 5 });
+    let firstLoad = true;
     let conversation = null;
     while (
       conversation === null ||
@@ -117,6 +112,10 @@ function* initApp() {
           ? Number(conversation.messages.nodes[0].timestamp_precise)
           : Date.now(),
       );
+      if (firstLoad) {
+        yield put({ type: STATUS_UPDATE, payload: 5 });
+        firstLoad = false;
+      }
       yield put({
         type: PUSH_DATA,
         payload: conversation,
