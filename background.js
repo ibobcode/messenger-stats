@@ -64,7 +64,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   else if (request.type === 'IS_ON_MESSENGER')
     // eslint-disable-next-line no-undef
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
-      sendResponse(tabs[0].url.includes('messenger'));
+      sendResponse(tabs[0].url.includes('www.messenger.com'));
     });
   return true;
+});
+
+// eslint-disable-next-line no-undef
+chrome.tabs.onActivated.addListener(activeInfo => {
+  // eslint-disable-next-line no-undef
+  chrome.tabs.get(activeInfo.tabId, infos => {
+    if (infos.url.includes('www.messenger.com')) {
+      // eslint-disable-next-line no-undef
+      chrome.tabs.executeScript(activeInfo.tabId, {
+        file: 'contentScript.js',
+      });
+    }
+  });
 });

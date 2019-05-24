@@ -79,6 +79,7 @@ function* initApp() {
       type: 'LS_GET',
       payload: 'conversations',
     });
+    console.log('storedData', storedData);
     if (
       storedData.conversations &&
       Object.keys(storedData.conversations).length > 0
@@ -90,10 +91,12 @@ function* initApp() {
 
     // THIRD STEP : Getting infos about the curent conversation and updating state
     const convId = yield getConvId();
+    console.log('convId', convId);
     const conversationsInfos = yield loadConvsInfos(
       userInfos.uid,
       userInfos.dtsg,
     );
+    console.log('conversationsInfos', conversationsInfos);
     yield put({ type: CONVS_META, payload: conversationsInfos, meta: convId });
     yield put({ type: CONV_SET, payload: convId });
     yield pause(1000);
